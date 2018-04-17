@@ -6,17 +6,20 @@ program main
   block
     use sqlite
 
-    type(c_ptr) :: db, stmt, tail, res
-    character(*), parameter :: s = "abc"
+    character(:), allocatable, target :: name, s, sql
     integer(c_int) :: rc
+    type(c_ptr) :: db, stmt, tail, res
 
-    rc = sqlite3_open(":memory:" // achar(0), db)
+    name = ":memory:" // achar(0)
+    rc = sqlite3_open(c_loc(name), db)
     print *, "sqlite3_open", rc
 
-    rc = sqlite3_prepare_v2(db, "select ?" // achar(0), -1, stmt, tail)
+    sql = "select ?" // achar(0)
+    rc = sqlite3_prepare_v2(db, c_loc(sql), -1, stmt, tail)
     print *, "sqlite3_prepare_v2", rc
 
-    rc = sqlite3_bind_text(stmt, 1, s, len(s), c_null_ptr)
+    s = "abc"
+    rc = sqlite3_bind_text(stmt, 1, c_loc(s), len(s), c_null_ptr)
     print *, "sqlite3_bind_text", rc
 
     rc = sqlite3_step(stmt)
