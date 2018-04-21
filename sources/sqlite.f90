@@ -54,16 +54,14 @@ module sqlite
 
      function sqlite3_open(filename, db) bind(c)
        use iso_c_binding, only: c_int, c_ptr
-       type(c_ptr), value :: filename
-       type(c_ptr), intent(out) :: db
+       type(c_ptr), value :: filename, db
        integer(c_int) sqlite3_open
      end function sqlite3_open
 
      function sqlite3_prepare_v2(db, sql, bytes, stmt, tail) bind(c)
        use iso_c_binding, only: c_int, c_ptr
-       type(c_ptr), value :: db, sql
+       type(c_ptr), value :: db, sql, stmt, tail
        integer(c_int), value :: bytes
-       type(c_ptr), intent(out) :: stmt, tail
        integer(c_int) sqlite3_prepare_v2
      end function sqlite3_prepare_v2
 

@@ -5,29 +5,26 @@ program main
 
   block
     use sqlite
+    use sqlite_aux
 
-    character(:), allocatable, target :: name, s, sql
     integer(c_int) :: rc
-    type(c_ptr) :: db, stmt, tail, res
+    type(c_ptr) :: db, res, stmt
 
-    allocate (name, source=":memory:" // achar(0))
-    rc = sqlite3_open(c_loc(name), db)
-    print *, "sqlite3_open", rc
+    db = sqlite_aux_open_database(":memory:")
+    if (.not. c_associated(db)) stop sqlite_aux_error_message(db)
 
-    sql = "select ?" // achar(0)
-    rc = sqlite3_prepare_v2(db, c_loc(sql), -1, stmt, tail)
-    print *, "sqlite3_prepare_v2", rc
+    stmt = sqlite_aux_prepare_statement(db, "select ?")
+    if (.not. c_associated(stmt)) stop sqlite_aux_error_message(db)
 
-    s = "abc"
-    rc = sqlite3_bind_text(stmt, 1, c_loc(s), len(s), c_null_ptr)
-    print *, "sqlite3_bind_text", rc
+    if (.not. sqlite_aux_bind_text_value(stmt, 1, "abc")) &
+         stop sqlite_aux_error_message(db)
 
     rc = sqlite3_step(stmt)
     print *, "sqlite3_step", rc
 
     res = sqlite3_column_text(stmt, 0)
     block
-      character(len(s)), pointer :: fres
+      character(1), pointer :: fres
       call c_f_pointer(res, fres)
       print *, "sqlite3_column_text ", fres
     end block
