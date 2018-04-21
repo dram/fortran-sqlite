@@ -10,7 +10,7 @@ program main
     integer(c_int) :: rc
     type(c_ptr) :: db, stmt, tail, res
 
-    name = ":memory:" // achar(0)
+    allocate (name, source=":memory:" // achar(0))
     rc = sqlite3_open(c_loc(name), db)
     print *, "sqlite3_open", rc
 
