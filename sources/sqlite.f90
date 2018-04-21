@@ -45,6 +45,12 @@ module sqlite
        type(c_ptr) sqlite3_column_text
      end function sqlite3_column_text
 
+     function sqlite3_errmsg(db) bind(c)
+       use iso_c_binding, only: c_ptr
+       type(c_ptr), value :: db
+       type(c_ptr) sqlite3_errmsg
+     end function sqlite3_errmsg
+
      function sqlite3_finalize(stmt) &
           bind(c, name="sqlite3_finalize")
        use iso_c_binding, only: c_int, c_ptr
