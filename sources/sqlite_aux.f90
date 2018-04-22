@@ -8,6 +8,7 @@ module sqlite_aux
   public &
        sqlite_aux_bind_text_value, &
        sqlite_aux_error_message, &
+       sqlite_aux_get_text_column, &
        sqlite_aux_open_database, &
        sqlite_aux_prepare_statement
 
@@ -48,6 +49,22 @@ contains
       sqlite_aux_error_message = fptr
     end block
   end function sqlite_aux_error_message
+
+  subroutine sqlite_aux_get_text_column(stmt, index, text)
+    type(c_ptr), value :: stmt
+    integer, value :: index
+    character(:), intent(out), allocatable :: text
+
+    type(c_ptr) cptr
+
+    cptr = sqlite3_column_text(stmt, index)
+
+    block
+      character(strlen(cptr)), pointer :: fptr
+      call c_f_pointer(cptr, fptr)
+      text = fptr
+    end block
+  end subroutine sqlite_aux_get_text_column
 
   function sqlite_aux_open_database(path)
     character(*), intent(in) :: path
