@@ -23,8 +23,8 @@ module sqlite_aux
 contains
 
   function sqlite_aux_bind_text_value(stmt, index, text)
-    type(c_ptr), intent(in) :: stmt
-    integer, intent(in) :: index
+    type(c_ptr), value :: stmt
+    integer, value :: index
     character(*), intent(in), target :: text
     logical sqlite_aux_bind_text_value
 
@@ -36,7 +36,7 @@ contains
   end function sqlite_aux_bind_text_value
 
   function sqlite_aux_error_message(db)
-    type(c_ptr), intent(in) :: db
+    type(c_ptr), value :: db
     character(:), allocatable :: sqlite_aux_error_message
 
     type(c_ptr) cptr
@@ -86,7 +86,7 @@ contains
   end function sqlite_aux_open_database
 
   function sqlite_aux_prepare_statement(db, sql)
-    type(c_ptr), intent(in) :: db
+    type(c_ptr), value :: db
     character(*), intent(in) :: sql
     type(c_ptr) sqlite_aux_prepare_statement
 
