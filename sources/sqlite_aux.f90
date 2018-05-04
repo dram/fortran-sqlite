@@ -6,10 +6,8 @@ module sqlite_aux
 
   private
   public &
-       sqlite_aux_bind_text_value, &
        sqlite_aux_error_message, &
        sqlite_aux_get_text_column, &
-       sqlite_aux_open_database, &
        sqlite_aux_prepare_statement
 
   interface
@@ -21,19 +19,6 @@ module sqlite_aux
   end interface
 
 contains
-
-  function sqlite_aux_bind_text_value(stmt, index, text)
-    type(c_ptr), value :: stmt
-    integer, value :: index
-    character(*), intent(in), target :: text
-    logical sqlite_aux_bind_text_value
-
-    integer rc
-
-    rc = sqlite3_bind_text(stmt, index, c_loc(text), len(text), c_null_ptr)
-
-    sqlite_aux_bind_text_value = rc == sqlite_ok
-  end function sqlite_aux_bind_text_value
 
   function sqlite_aux_error_message(db)
     type(c_ptr), value :: db
@@ -65,25 +50,6 @@ contains
       text = fptr
     end block
   end subroutine sqlite_aux_get_text_column
-
-  function sqlite_aux_open_database(path)
-    character(*), intent(in) :: path
-    type(c_ptr) sqlite_aux_open_database
-
-    character(:), allocatable, target :: buffer
-    integer rc
-    type(c_ptr), target :: cptr
-
-    buffer = path // c_null_char
-
-    rc = sqlite3_open(c_loc(buffer), c_loc(cptr))
-
-    if (rc == sqlite_ok) then
-       sqlite_aux_open_database = cptr
-    else
-       sqlite_aux_open_database = c_null_ptr
-    end if
-  end function sqlite_aux_open_database
 
   function sqlite_aux_prepare_statement(db, sql)
     type(c_ptr), value :: db

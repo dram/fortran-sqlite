@@ -1,7 +1,9 @@
 module sqlite
-  use iso_c_binding
+  use iso_c_binding, only: c_int
 
   implicit none
+
+  private c_int
 
   include "constants.f90"
 
